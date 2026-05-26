@@ -13,7 +13,7 @@ class CourseListView(generic.ListView):
     def get_queryset(self):
         return Course.objects.order_by('-pub_date')[:5]
 
-class CourseDetailsView(generic.DetailView):
+class CourseDetailView(generic.DetailView):
     model = Course
     template_name = 'onlinecourse/course_detail_bootstrap.html'
 
@@ -84,7 +84,7 @@ def show_exam_result(request, course_id, submission_id):
     
     return render(request, 'onlinecourse/exam_result_bootstrap.html', context)
 
-def user_login(request):
+def login_request(request):
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['psw']
@@ -96,11 +96,11 @@ def user_login(request):
             return render(request, 'onlinecourse/user_login_bootstrap.html', {'error_message': 'Invalid username or password'})
     return render(request, 'onlinecourse/user_login_bootstrap.html')
 
-def user_logout(request):
+def logout_request(request):
     logout(request)
     return HttpResponseRedirect(reverse('onlinecourse:index'))
 
-def registration(request):
+def registration_request(request):
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['psw']
