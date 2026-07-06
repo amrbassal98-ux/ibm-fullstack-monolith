@@ -1,0 +1,18 @@
+/* Shared Asset Styles - Minimal Reset */
+/* Most styling is now handled by component-specific CSS files and Bootstrap */
+
+/* Image Reset */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Link Reset */
+a {
+  text-decoration: none;
+}
+
+/* Form Elements Reset */
+input, textarea, select {
+  font-family: inherit;
+}

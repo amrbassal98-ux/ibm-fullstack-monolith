@@ -1,0 +1,59 @@
+/* Register Page Wrapper */
+.register-page-wrapper {
+  background-color: #121824 !important;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Register Card Container */
+.register-card {
+  background-color: #1c2434 !important;
+  border: 1px solid #2d3748;
+  border-radius: 12px;
+  width: 100%;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+}
+
+/* Form Control Styling */
+.form-control {
+  background-color: #121824 !important;
+  border: 1px solid #2d3748 !important;
+  color: #e2e8f0 !important;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  transition: all 0.2s ease-in-out;
+}
+
+.form-control:focus {
+  border-color: #00f0ff !important;
+  box-shadow: 0 0 0 0.25rem rgba(0, 240, 255, 0.25) !important;
+}
+
+/* Cyan Button Styling */
+.btn-cyan {
+  background-color: #00f0ff !important;
+  color: #0f172a !important;
+  font-weight: 700;
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-cyan:hover {
+  background-color: #00d8e6 !important;
+  box-shadow: 0 0 12px rgba(0, 240, 255, 0.4);
+}
+
+/* Text Colors */
+.text-cyan {
+  color: #00f0ff !important;
+}
+
+.text-cyan:hover {
+  color: #00d8e6 !important;
+}
+
+/* Banner Section */
+.banner {
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+}
