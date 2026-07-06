@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Product - StoreAPI</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="style.css" rel="stylesheet">
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container">
+      <a class="navbar-brand" href="/">StoreAPI</a>
+      <a href="/" class="btn btn-outline-secondary btn-sm">&larr; Back to Catalog</a>
+    </div>
+  </nav>
+
+  <div class="container my-5" style="max-width: 650px;">
+    <div class="card custom-card p-4 p-md-5">
+      <h1 class="h2 text-white mb-4">Edit Product <span class="fs-6 text-muted-custom" id="productIdBadge"></span></h1>
+      
+      <div id="alertContainer"></div>
+
+      <div id="loadingIndicator" class="text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="text-muted mt-2">Loading product data...</p>
+      </div>
+
+      <form id="editProductForm" class="needs-validation d-none" novalidate>
+        <div class="mb-3">
+          <label for="name" class="form-label">Product Name</label>
+          <input type="text" class="form-control" id="name" placeholder="e.g. Mechanical Keyboard" required>
+          <div class="invalid-feedback">Please enter a valid product name.</div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="price" class="form-label">Price ($)</label>
+            <input type="number" class="form-control" id="price" placeholder="0.00" step="0.01" min="0" required>
+            <div class="invalid-feedback">Price must be 0 or greater.</div>
+          </div>
+          
+          <div class="col-md-6 mb-3">
+            <label for="stock" class="form-label">Stock Inventory</label>
+            <input type="number" class="form-control" id="stock" placeholder="0" min="0" required>
+            <div class="invalid-feedback">Stock must be a non-negative integer.</div>
+          </div>
+        </div>
+
+        <div class="mb-4">
+          <label for="category" class="form-label">Category</label>
+          <select class="form-select" id="category" required>
+            <option value="" disabled>Select a category</option>
+            <option value="Electronics">Electronics</option>
+            <option value="Furniture">Furniture</option>
+            <option value="Accessories">Accessories</option>
+          </select>
+          <div class="invalid-feedback">Please choose a category.</div>
+        </div>
+
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+          <a href="/" class="btn btn-outline-secondary px-4">Cancel</a>
+          <button type="submit" class="btn btn-primary px-4" id="submitBtn">
+            <span class="spinner-border spinner-border-sm d-none" id="btnSpinner" role="status" aria-hidden="true"></span>
+            Save Changes
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <footer class="text-center">
+    <div class="container">
+      <p class="mb-0">&copy; 2026 StoreAPI. Built with Express.js & Bootstrap.</p>
+    </div>
+  </footer>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const productId = urlParams.get('id');
+
+    const form = document.getElementById('editProductForm');
+    const loadingIndicator = document.getElementById('loadingIndicator');
+    const submitBtn = document.getElementById('submitBtn');
+    const btnSpinner = document.getElementById('btnSpinner');
+    const alertContainer = document.getElementById('alertContainer');
+    const productIdBadge = document.getElementById('productIdBadge');
+
+    function showAlert(message, type = 'danger') {
+      alertContainer.innerHTML = `
+        <div class="alert alert-${type} alert-dismissible fade show bg-opacity-10 text-${type} border-${type}" role="alert">
+          <strong>${type === 'danger' ? 'Error!' : 'Success!'}</strong> ${message}
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      `;
+    }
+
+    async function loadProductData() {
+      if (!productId) {
+        showAlert('No Product ID was specified in the URL.');
+        loadingIndicator.classList.add('d-none');
+        return;
+      }
+
+      try {
+        const response = await fetch(`/api/products/${productId}`);
+        if (!response.ok) {
+          throw new Error('Product not found');
+        }
+        const product = await response.json();
+        
+        // Populate inputs
+        document.getElementById('name').value = product.name;
+        document.getElementById('price').value = product.price;
+        document.getElementById('stock').value = product.stock;
+        document.getElementById('category').value = product.category;
+        productIdBadge.innerText = `(ID: ${product.id})`;
+
+        loadingIndicator.classList.add('d-none');
+        form.classList.remove('d-none');
+      } catch (err) {
+        console.error('Error fetching product:', err);
+        loadingIndicator.classList.add('d-none');
+        showAlert(`Failed to fetch product with ID "${productId}". The product might not exist.`);
+      }
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      if (!form.checkValidity()) {
+        e.stopPropagation();
+        form.classList.add('was-validated');
+        return;
+      }
+
+      form.classList.add('was-validated');
+      submitBtn.disabled = true;
+      btnSpinner.classList.remove('d-none');
+
+      const name = document.getElementById('name').value;
+      const price = parseFloat(document.getElementById('price').value);
+      const stock = parseInt(document.getElementById('stock').value, 10);
+      const category = document.getElementById('category').value;
+
+      try {
+        const response = await fetch(`/api/products/${productId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ name, price, category, stock })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          showAlert('Product updated successfully! Redirecting...', 'success');
+          setTimeout(() => {
+            window.location.href = '/';
+          }, 1500);
+        } else {
+          showAlert(data.error?.message || 'Failed to update product');
+          submitBtn.disabled = false;
+          btnSpinner.classList.add('d-none');
+        }
+      } catch (err) {
+        console.error('Request failed:', err);
+        showAlert('Network error occurred. Please try again.');
+        submitBtn.disabled = false;
+        btnSpinner.classList.add('d-none');
+      }
+    });
+
+    // Initial trigger
+    loadProductData();
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block title %}Sign In | Customer360{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center mt-5">
+    <div class="col-md-5">
+        <div class="card shadow border-0">
+            <div class="card-header bg-dark text-white py-3 text-center">
+                <h4 class="mb-0 fw-bold">Authentication Gateway</h4>
+            </div>
+            <div class="card-body p-4 bg-white">
+                <form method="post" novalidate>
+                    {% csrf_token %}
+                    
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger small py-2">
+                            {{ form.non_field_errors|striptags }}
+                        </div>
+                    {% endif %}
+                    
+                    <div class="mb-3 text-start">
+                        <label for="id_username" class="form-label fw-bold text-secondary">Username</label>
+                        <input type="text" name="username" id="id_username" class="form-control" placeholder="Enter Username" required autofocus>
+                        {% if form.username.errors %}
+                            <div class="text-danger small mt-1">{{ form.username.errors|striptags }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-4 text-start">
+                        <label for="id_password" class="form-label fw-bold text-secondary">Password</label>
+                        <input type="password" name="password" id="id_password" class="form-control" placeholder="Enter secure password" required>
+                        {% if form.password.errors %}
+                            <div class="text-danger small mt-1">{{ form.password.errors|striptags }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-lg fw-bold shadow-sm">Authenticate Session</button>
+                    </div>
+                </form>
+            </div>
+            <div class="card-footer bg-light text-center py-3 border-top">
+                <span class="text-muted small">New field deployment agent?</span> 
+                <a href="{% url 'signup' %}" class="text-decoration-none fw-bold small ms-1">Create an Agent Account</a>
+            </div>
+            <div class="card-footer bg-light text-center py-3 text-muted small border-top">
+                Notice: Unauthorized system access attempts are subject to standard monitoring protocols.
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

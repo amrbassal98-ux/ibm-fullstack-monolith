@@ -1,0 +1,305 @@
+/* Reset some default styles */
+body, h1, ul {
+    margin: 0;
+    padding: 0;
+}
+
+/* Set a background color */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+}
+
+/* Navbar */
+.navbar {
+    display: flex;
+    align-items: center;
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.tag,
+.plants-link-container,
+.cart-container {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    margin-left: 80px;
+}
+
+.tag {
+    justify-content: flex-start;
+}
+
+.plants-link-container {
+    justify-content: center;
+}
+
+.cart-container {
+    justify-content: flex-end;
+}
+
+
+/* Product Grid */
+.product-grid {
+    display:flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin: 0 auto;
+    max-width: 1200px;
+    padding-bottom: 50px;
+}
+.product-list {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 20px;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* Product Card */
+.product-card {
+    flex: 0 1 300px;
+    margin-bottom: 20px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 15px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;    /* Centers image and text inside the card */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.01);
+    transition: transform 0.2s ease-in-out;
+}
+
+.product-card:hover {
+    transform: translateY(-5px); /* Adds a subtle lift effect */
+}
+
+.product-image {
+    width: 100%;
+    max-width: 200px;       /* Keeps all images the same scale */
+    height: 200px;
+    object-fit: contain;    /* Prevents images from stretching */
+    margin-bottom: 15px;
+}
+
+.category-title{
+    display: flex;
+    justify-content: center; /* Centers text horizontally */
+    align-items: center;
+    width: 100%;
+    margin: 40px 0 20px 0;   /* Adds space above and below the title */
+    font-size: 2rem;
+    color: #4CAF50;          /* Matches your green theme */
+    text-align: center;
+}
+
+.product-title {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.product-price {
+    color: #e74c3c;
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+}
+
+
+.product-button {
+    background-color: #e74c3c;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+    margin-top: 10px;
+}
+
+.product-button:hover {
+    background-color: #c0392b;
+}
+
+/* Pseudo-elements - Sale badge */
+.product-card::before {
+    content: "SALE";
+    background-color: #e74c3c;
+    color: #fff;
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 5px 10px;
+    border-radius: 0 0 0 5px;
+}
+
+.tag a{
+    text-decoration: none;
+}
+
+.tag img {
+    height: 70px;
+    width: 70px;
+    border-radius: 50%;   
+}
+
+.cart{
+    color: white;
+    display: inline-block;
+    position: relative;
+}
+.cart_quantity_count{
+    position: absolute;
+    top: 44%;           
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: transparent;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    min-width: 20px;     
+    height: 20px;
+    border-radius: 50%;  
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid whitesmoke;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    z-index: 10;
+}
+
+.plants-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    text-decoration: solid;
+    font-size: 30px;
+    font-weight: bold;
+}
+.plantname_heading{
+   display: flex;
+   align-items: center;
+   justify-content: center;
+    /* background-color: yellow; */
+}
+.plant_heading{
+    width: 400px;
+    text-align: center;
+    margin: 20px;
+    border: 1px solid rgb(5, 4, 4);
+    border-left: none;
+    border-right: none;
+
+    
+}
+
+
+.product-button {
+    background-color: #4CAF50; /* Green */
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    transition-duration: 0.4s;
+    cursor: pointer;
+  }
+  
+  .product-button:hover {
+    background-color: #45a049;
+  }
+  
+  .product-button.added-to-cart {
+    background-color: grey; /* Grey when product is added */
+    cursor: not-allowed;
+  }
+ 
+  @media (max-width: 768px) {
+    
+    /* 1. Navbar Adjustments */
+    .navbar {
+        padding: 10px 15px; /* Tighter padding */
+    }
+
+    .plants-link-container {
+        display: none !important;
+    }
+
+    .tag,
+    .cart-container {
+        flex: 1;
+    }
+
+    .tag .luxury h3 {
+        font-size: 1.1rem;
+        white-space: nowrap;
+    }
+
+    .tag .luxury i {
+        display: none; /* Hides the long tagline to save space for the Cart */
+    }
+
+    .tag img {
+        width: 60px;
+        height: 60px;
+    }
+
+    .cart-container {
+        display:flex;
+        justify-content: flex-end;
+    }
+
+    /* 2. Product Category Titles */
+    .category_label {
+        width: 100%;
+        text-align: center;
+        font-size: 1.6rem;
+        margin: 30px 0 15px 0;
+        display: block;
+    }
+
+    /* 3. The Product Grid */
+    .product-grid {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center; /* This is the key for mobile centering */
+        gap: 20px;
+        width: 100%;
+        padding: 10px;
+        box-sizing: border-box;
+    }
+
+    .product-list-container {
+        width: 100%;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    /* 4. The Product Cards */
+    .product-card {
+        flex: 0 1 calc(100% - 40px); 
+        max-width: 320px;
+        margin: 0 auto;
+    }
+
+    .product-image {
+        height: 150px; /* Smaller images for mobile */
+    }
+}

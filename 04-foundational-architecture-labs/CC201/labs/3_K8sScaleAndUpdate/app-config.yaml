@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+  labels:
+    app: hello-world
+data:
+  # Key-value pairs accessible by your application runtime
+  APP_ENV: "development"
+  LOG_LEVEL: "debug"
+  MESSAGE: "Hello, this is Amr Bassal!"

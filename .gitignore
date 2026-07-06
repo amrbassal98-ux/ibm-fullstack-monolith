@@ -1,0 +1,45 @@
+# Dependencies
+node_modules/
+
+# Python bytecode
+__pycache__/
+*.pyc
+
+# Environment variables
+.env
+.env.*
+
+# Virtual environments
+venv/
+.venv/
+
+# IDE and tooling
+.vscode/
+.qodo/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Build outputs
+dist/
+build/
+*.egg-info/
+
+# Coverage
+.coverage
+htmlcov/
+.pytest_cache/
+
+# Django
+*.sqlite3
+staticfiles/
+media/
+
+# Package files
+*.tar.gz
+*.zip

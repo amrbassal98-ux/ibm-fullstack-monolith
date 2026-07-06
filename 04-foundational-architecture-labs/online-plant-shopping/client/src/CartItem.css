@@ -1,0 +1,185 @@
+/* 1. Main Page Wrapper */
+.cart-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 30px 15px;
+    margin: 0;
+    width: 100%;
+}
+
+/* Header styling */
+.total_cart_amount {
+    font-size: 28px;
+    color: #4CAF50;
+    margin-bottom: 100px;
+    font-weight: bold;
+}
+
+/* 2. Individual Cart Item Card (The Vertical Fix) */
+.cart-item {
+    display: flex;
+    flex-direction: column; /* Stacks image on top of details */
+    align-items: center;    /* Centers all content horizontally */
+    text-align: center;      /* Centers the text */
+    width: 100%;
+    max-width: 400px;       /* Keeps the vertical card from being too wide */
+    margin-bottom: 30px;
+    padding: 25px;
+    border-radius: 15px;
+    background-color: #ffffff;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.06); /* Stylish soft shadow */
+    transition: transform 0.3s ease;
+    margin-top: 10px;
+}
+
+.cart-item:hover {
+    transform: translateY(-5px); /* Subtle hover lift for style */
+}
+
+/* 3. Image Styling */
+.cart-item-image {
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* 4. Details Section */
+.cart-item-details {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+}
+
+.cart-item-name {
+    font-size: 24px;
+    font-weight: 700;
+    color: #2e7d32; /* Darker green for readability */
+}
+
+.cart-item-cost {
+    font-size: 18px;
+    color: #666;
+}
+
+.cart-item-total {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 5px 0;
+    color: #333;
+}
+
+/* 5. Quantity Controls (Centered Row) */
+.cart-item-quantity {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    margin: 15px 0;
+}
+
+.cart-item-button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%; /* Round buttons look more stylish */
+    cursor: pointer;
+    font-size: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background 0.2s;
+}
+
+.cart-item-button:hover {
+    background-color: #388e3c;
+}
+
+.cart-item-quantity-value {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+/* 6. The Delete Button (Small and Proportional) */
+.cart-item-delete {
+    margin-top: 15px;
+    padding: 8px 24px;
+    background-color: #ff5252;
+    color: white;
+    border: none;
+    border-radius: 20px; /* Pill shape for style */
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    width: fit-content;
+}
+
+.cart-item-delete:hover {
+    background-color: #c62828;
+}
+
+/* 7. Bottom Navigation Buttons */
+.continue_shopping_btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    margin-top: 20px;
+    width: 100%;
+}
+
+.get-started-button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 16px 40px;
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 30px; /* Matches the pill style */
+    cursor: pointer;
+    width: 280px;
+    transition: all 0.3s ease;
+}
+
+.get-started-button:hover {
+    background-color: #3e8e41;
+    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+}
+
+@media (max-width: 768px) {
+    .cart-item {
+        display:flex;
+        flex-direction: column;
+        text-align: center;
+        width: 90%;
+        margin: 20px auto;
+        align-items: center;
+        border: 1px solid #e0e0e0;
+        border-radius: 15px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        padding: 20px;
+    }
+
+    .cart-item-details {
+        padding: 20px 0;
+        align-items: center;
+    }
+
+    .cart-item-image {
+        width: 100%;
+        max-width: 250px;
+        height: auto;
+    }
+
+    .cart-item-delete {
+        align-self: center;
+    }
+}

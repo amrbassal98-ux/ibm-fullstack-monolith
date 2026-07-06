@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block title %}Log Interaction | Customer360{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-dark text-white py-3">
+                <h3 class="card-title mb-0 fw-bold">Log Interaction: {{ customer.name }}</h3>
+            </div>
+            <div class="card-body p-4 bg-white">
+                <form method="post">
+                    {% csrf_token %}
+
+                    <div class="mb-4 text-start">
+                        <label class="form-label d-block fw-bold text-secondary">Communication Channel</label>
+                        <div class="btn-group w-100" role="group">
+                            {% for value, text in channels %}
+                                <input type="radio" class="btn-check" name="channel" id="channel_{{ value }}" value="{{ value }}" required>
+                                <label class="btn btn-outline-primary" for="channel_{{ value }}">{{ text }}</label>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="mb-4 text-start">
+                        <label class="form-label d-block fw-bold text-secondary">Traffic Direction</label>
+                        <div class="btn-group w-100" role="group">
+                            {% for value, text in directions %}
+                                <input type="radio" class="btn-check" name="direction" id="dir_{{ value }}" value="{{ value }}" required>
+                                <label class="btn btn-outline-primary" for="dir_{{ value }}">{{ text }}</label>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="mb-3 text-start">
+                        <label class="form-label fw-bold text-secondary">Interaction Summary Note</label>
+                        {{ form.summary }}
+                    </div>
+
+                    <div class="d-grid mt-4">
+                        <button type="submit" class="btn btn-primary btn-lg fw-bold">Commit Log Entry</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

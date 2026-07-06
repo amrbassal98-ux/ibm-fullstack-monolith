@@ -1,0 +1,32 @@
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: hello-world
+spec:
+  scaleTargetRef:
+    kind: Deployment
+    name: hello-world
+    apiVersion: apps/v1
+  minReplicas: 1
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 5
+  behavior:
+      scaleDown:
+        stabilizationWindowSeconds: 0 # Drops the cool-down from 5 mins to 15 secs
+        policies:
+        - type: Percent
+          value: 100                    # Allows terminating up to 100% of extra pods at once
+          periodSeconds: 3
+      scaleUp:
+        stabilizationWindowSeconds: 0   # React instantly to spikes (no wait window)
+        policies:
+        - type: Percent
+          value: 900                    # Allow growing by up to 900% of current replicas
+          periodSeconds: 3             # Evaluate and execute this burst every 10 seconds
+        selectPolicy: Max

@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}Welcome | Customer360{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center my-5">
+    <div class="col-md-8 text-center">
+        <div class="p-5 mb-4 bg-white rounded shadow-sm border">
+            <h1 class="display-4 fw-bold text-dark mb-3">Centralized Customer360 Hub</h1>
+            <p class="lead text-muted mb-4">
+                Welcome to the corporate interaction repository. To ensure information security and retain transactional compliance auditing records, you must be securely authenticated to access internal directory interfaces.
+            </p>
+            <hr class="my-4">
+            <div class="d-flex justify-content-center gap-3">
+                <a class="btn btn-primary btn-lg px-4 fw-bold shadow-sm" href="{% url 'login' %}">Sign In to Dashboard</a>
+                <a class="btn btn-outline-secondary btn-lg px-4 fw-bold" href="{% url 'signup' %}">Agent Registration</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

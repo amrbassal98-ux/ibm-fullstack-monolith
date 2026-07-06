@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StoreAPI Dashboard</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="style.css" rel="stylesheet">
+</head>
+<body>
+  <!-- Header / Nav -->
+  <nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container">
+      <a class="navbar-brand" href="/">StoreAPI</a>
+      <div class="d-flex align-items-center">
+        <a href="create.html" class="btn btn-primary btn-sm">+ Add Product</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero greeting section -->
+  <div class="container my-5">
+    <div class="p-5 mb-4 custom-card rounded-3 position-relative overflow-hidden">
+      <div class="row align-items-center">
+        <div class="col-md-8">
+          <h1 class="display-5 fw-bold text-white mb-3" id="greetingMessage">Welcome, Valued Customer!</h1>
+          <p class="col-md-10 fs-5 text-muted-custom mb-0" id="greetingSub">
+            We are glad to have you. Explore our product categories, manage stock inventory, or test the API using our interactive dashboard below.
+          </p>
+        </div>
+        <div class="col-md-4 text-end d-none d-md-block">
+          <span class="badge bg-secondary p-3 fs-6 rounded-pill border border-dark">Monolith V1.0.0</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filters & Search -->
+    <div class="row mb-4 g-3 align-items-center">
+      <div class="col-md-5">
+        <div class="input-group">
+          <input type="text" id="searchInput" class="form-control" placeholder="Search products by name...">
+          <button class="btn btn-outline-secondary" type="button" id="clearSearchBtn">Clear</button>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <select id="categoryFilter" class="form-select">
+          <option value="">All Categories</option>
+          <option value="Electronics">Electronics</option>
+          <option value="Furniture">Furniture</option>
+          <option value="Accessories">Accessories</option>
+        </select>
+      </div>
+      <div class="col-md-3 text-md-end">
+        <span class="text-muted-custom fs-7" id="productCount">Showing 0 products</span>
+      </div>
+    </div>
+
+    <!-- Catalog grid -->
+    <div class="row g-4" id="catalogGrid">
+      <!-- Dynamic Products -->
+      <div class="col-12 text-center my-5">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="text-muted mt-2">Fetching product catalog...</p>
+      </div>
+    </div>
+  </div>
+
+  <footer class="text-center">
+    <div class="container">
+      <p class="mb-0">&copy; 2026 StoreAPI. Built with Express.js & Bootstrap.</p>
+    </div>
+  </footer>
+
+  <script>
+    // Fetch greeting from endpoint
+    async function loadGreeting() {
+      try {
+        const response = await fetch('/api/greet');
+        if (response.ok) {
+          const data = await response.json();
+          document.getElementById('greetingMessage').innerText = data.message;
+        }
+      } catch (err) {
+        console.error('Error fetching greeting:', err);
+      }
+    }
+
+    // Fetch and render products catalog
+    async function loadProducts() {
+      const search = document.getElementById('searchInput').value;
+      const category = document.getElementById('categoryFilter').value;
+      
+      let url = '/api/products?';
+      if (search) url += `search=${encodeURIComponent(search)}&`;
+      if (category) url += `category=${encodeURIComponent(category)}&`;
+
+      const grid = document.getElementById('catalogGrid');
+      
+      try {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error('API Error');
+        const products = await response.json();
+        
+        document.getElementById('productCount').innerText = `Showing ${products.length} product(s)`;
+
+        if (products.length === 0) {
+          grid.innerHTML = `
+            <div class="col-12 text-center py-5">
+              <h3 class="text-white opacity-50">No products found</h3>
+              <p class="text-muted-custom">Try modifying your search query or filter category.</p>
+            </div>
+          `;
+          return;
+        }
+
+        grid.innerHTML = products.map(product => {
+          let badgeClass = 'badge-default';
+          const cat = product.category ? product.category.toLowerCase() : '';
+          if (cat === 'electronics') badgeClass = 'badge-electronics';
+          else if (cat === 'furniture') badgeClass = 'badge-furniture';
+          else if (cat === 'accessories') badgeClass = 'badge-accessories';
+
+          return `
+            <div class="col-md-4">
+              <div class="card custom-card h-100 p-4">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                  <span class="badge badge-custom ${badgeClass}">${escapeHtml(product.category)}</span>
+                  <span class="text-muted fs-7">ID: ${product.id}</span>
+                </div>
+                <h3 class="h5 text-white mb-2">${escapeHtml(product.name)}</h3>
+                <div class="d-flex justify-content-between align-items-center mt-auto pt-3 border-top border-secondary">
+                  <div>
+                    <div class="fs-6 text-muted-custom">Price</div>
+                    <div class="fs-4 fw-bold text-success">$${product.price.toFixed(2)}</div>
+                  </div>
+                  <div class="text-end">
+                    <div class="fs-6 text-muted-custom">Stock</div>
+                    <div class="fs-5 fw-semibold ${product.stock > 0 ? 'text-white' : 'text-danger'}">
+                      ${product.stock > 0 ? product.stock : 'Out of Stock'}
+                    </div>
+                  </div>
+                </div>
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                  <a href="detail.html?id=${product.id}" class="btn btn-outline-secondary btn-sm flex-fill">View</a>
+                  <a href="edit.html?id=${product.id}" class="btn btn-primary btn-sm flex-fill">Edit</a>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('');
+      } catch (err) {
+        console.error('Error fetching products:', err);
+        grid.innerHTML = `
+          <div class="col-12 text-center py-5">
+            <h3 class="text-danger">Failed to Load Products</h3>
+            <p class="text-muted">Ensure the server is running and try again.</p>
+          </div>
+        `;
+      }
+    }
+
+    function escapeHtml(text) {
+      if (!text) return '';
+      return text.toString()
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    // Event listeners
+    document.getElementById('searchInput').addEventListener('input', loadProducts);
+    document.getElementById('categoryFilter').addEventListener('change', loadProducts);
+    document.getElementById('clearSearchBtn').addEventListener('click', () => {
+      document.getElementById('searchInput').value = '';
+      loadProducts();
+    });
+
+    // Initial load
+    loadGreeting();
+    loadProducts();
+  </script>
+</body>
+</html>

@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product Details - StoreAPI</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="style.css" rel="stylesheet">
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container">
+      <a class="navbar-brand" href="/">StoreAPI</a>
+      <a href="/" class="btn btn-outline-secondary btn-sm">&larr; Back to Catalog</a>
+    </div>
+  </nav>
+
+  <div class="container my-5" style="max-width: 700px;">
+    <div id="alertContainer"></div>
+
+    <div id="loadingIndicator" class="text-center py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <p class="text-muted mt-2">Fetching product info...</p>
+    </div>
+
+    <div id="detailCard" class="card custom-card p-4 p-md-5 d-none">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <span id="productCategory" class="badge badge-custom badge-default fs-6">Category</span>
+        <span class="text-muted-custom">Product ID: <strong id="productId" class="text-white"></strong></span>
+      </div>
+
+      <h1 class="display-6 text-white mb-4" id="productName">Product Name</h1>
+
+      <div class="row g-4 mb-4 text-center">
+        <div class="col-6">
+          <div class="p-3 bg-dark bg-opacity-50 border border-secondary rounded-3">
+            <span class="text-muted-custom d-block mb-1">Unit Price</span>
+            <span class="fs-3 fw-bold text-success" id="productPrice">$0.00</span>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="p-3 bg-dark bg-opacity-50 border border-secondary rounded-3">
+            <span class="text-muted-custom d-block mb-1">Stock Availability</span>
+            <span class="fs-3 fw-bold text-white" id="productStock">0</span>
+          </div>
+        </div>
+      </div>
+
+      <hr class="border-secondary my-4">
+
+      <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center">
+        <div>
+          <a href="/" class="btn btn-outline-secondary">Back to Catalog</a>
+        </div>
+        <div class="d-flex gap-2">
+          <a id="editLink" href="#" class="btn btn-primary">Edit Details</a>
+          <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete Product</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Modal Confirmation -->
+  <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content bg-dark border-secondary text-white">
+        <div class="modal-header border-secondary">
+          <h5 class="modal-title" id="deleteModalLabel">Confirm Product Deletion</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          Are you sure you want to permanently delete <strong id="deleteTargetName" class="text-danger">this product</strong>? This action cannot be undone.
+        </div>
+        <div class="modal-footer border-secondary">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-danger" id="confirmDeleteBtn">
+            <span class="spinner-border spinner-border-sm d-none" id="deleteSpinner" role="status" aria-hidden="true"></span>
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="text-center mt-auto">
+    <div class="container">
+      <p class="mb-0">&copy; 2026 StoreAPI. Built with Express.js & Bootstrap.</p>
+    </div>
+  </footer>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const productId = urlParams.get('id');
+
+    const loadingIndicator = document.getElementById('loadingIndicator');
+    const detailCard = document.getElementById('detailCard');
+    const alertContainer = document.getElementById('alertContainer');
+    const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+    const deleteSpinner = document.getElementById('deleteSpinner');
+
+    function showAlert(message, type = 'danger') {
+      alertContainer.innerHTML = `
+        <div class="alert alert-${type} alert-dismissible fade show bg-opacity-10 text-${type} border-${type}" role="alert">
+          <strong>${type === 'danger' ? 'Error!' : 'Success!'}</strong> ${message}
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      `;
+    }
+
+    async function loadProductDetails() {
+      if (!productId) {
+        showAlert('No Product ID was specified in the URL.');
+        loadingIndicator.classList.add('d-none');
+        return;
+      }
+
+      try {
+        const response = await fetch(`/api/products/${productId}`);
+        if (!response.ok) {
+          throw new Error('Product not found');
+        }
+        const product = await response.json();
+
+        // Populate fields
+        document.getElementById('productId').innerText = product.id;
+        document.getElementById('productName').innerText = product.name;
+        document.getElementById('deleteTargetName').innerText = product.name;
+        document.getElementById('productPrice').innerText = `$${product.price.toFixed(2)}`;
+        document.getElementById('productStock').innerText = product.stock;
+
+        const categoryBadge = document.getElementById('productCategory');
+        categoryBadge.innerText = product.category;
+        
+        // Style category badge
+        const cat = product.category ? product.category.toLowerCase() : '';
+        categoryBadge.className = 'badge badge-custom';
+        if (cat === 'electronics') categoryBadge.classList.add('badge-electronics');
+        else if (cat === 'furniture') categoryBadge.classList.add('badge-furniture');
+        else if (cat === 'accessories') categoryBadge.classList.add('badge-accessories');
+        else categoryBadge.classList.add('badge-default');
+
+        // Setup edit link
+        document.getElementById('editLink').href = `edit.html?id=${product.id}`;
+
+        loadingIndicator.classList.add('d-none');
+        detailCard.classList.remove('d-none');
+      } catch (err) {
+        console.error('Error fetching product detail:', err);
+        loadingIndicator.classList.add('d-none');
+        showAlert(`Failed to fetch details for product ID "${productId}".`);
+      }
+    }
+
+    // Delete handler
+    confirmDeleteBtn.addEventListener('click', async () => {
+      confirmDeleteBtn.disabled = true;
+      deleteSpinner.classList.remove('d-none');
+
+      try {
+        const response = await fetch(`/api/products/${productId}`, {
+          method: 'DELETE'
+        });
+
+        if (response.ok) {
+          // Hide delete modal
+          const modalInstance = bootstrap.Modal.getInstance(document.getElementById('deleteModal'));
+          modalInstance.hide();
+
+          showAlert('Product deleted successfully! Redirecting to catalog...', 'success');
+          detailCard.classList.add('d-none');
+
+          setTimeout(() => {
+            window.location.href = '/';
+          }, 1500);
+        } else {
+          const data = await response.json();
+          showAlert(data.error?.message || 'Failed to delete product');
+          confirmDeleteBtn.disabled = false;
+          deleteSpinner.classList.add('d-none');
+        }
+      } catch (err) {
+        console.error('Error deleting product:', err);
+        showAlert('Network error occurred during deletion.');
+        confirmDeleteBtn.disabled = false;
+        deleteSpinner.classList.add('d-none');
+      }
+    });
+
+    // Initial trigger
+    loadProductDetails();
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

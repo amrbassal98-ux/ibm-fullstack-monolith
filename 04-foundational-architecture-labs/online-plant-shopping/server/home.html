@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <h1 id="header">Orchestration Successful</h1>
+    <button id="sendTask">Send Test Task</button>
+
+    <script>
+        document.getElementById('sendTask').addEventListener('click', async () => {
+            const response = await fetch ('/api/tasks', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    title: "Learn Backend Integration",
+                    priority: "High"
+                })
+            });
+            const data = await response.json();
+            if (data) {
+                console.log('Success:', data);
+                alert('Server says: ' + data.message);
+                const newMessage = document.createElement('p');
+                newMessage.textContent = `New Task: ${data.data.title} - Priority: ${data.data.priority}`;
+                const container = document.body;
+                container.append(newMessage);
+            };
+        });
+    </script>
+</body>
+</html>
